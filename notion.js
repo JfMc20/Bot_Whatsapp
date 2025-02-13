@@ -2,57 +2,108 @@ const { Client } = require('@notionhq/client');
 const { readFileSync } = require('fs');
 const mime = require('mime-types');
 
-// Inicializa el cliente con tu API Key
+// Inicializa el cliente de Notion
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
+// ==================== FUNCIONES PARA NOTAS ====================
 async function agregarNota(nota, etiquetas = ['General']) {
   try {
-    if (!process.env.NOTION_DATABASE_ID) {
-      throw new Error("❌ ERROR: NOTION_DATABASE_ID no está definido en el .env");
+    if (!process.env.NOTION_DATABASE_ID || !process.env.NOTION_API_KEY) {
+      throw new Error("❌ Configuración incompleta en .env");
     }
-    if (!process.env.NOTION_API_KEY) {
-      throw new Error("❌ ERROR: NOTION_API_KEY no está definido en el .env");
-    }
-
-    console.log("✅ Conectando a Notion con DATABASE_ID:", process.env.NOTION_DATABASE_ID);
 
     const response = await notion.pages.create({
       parent: { database_id: process.env.NOTION_DATABASE_ID },
       properties: {
         "Name": { 
-          title: [{ text: { content: nota } }]
+          title: [{ text: { content: nota.slice(0, 2000) } }]
         },
         "Fecha": {
           date: { start: new Date().toISOString() }
         },
         "Tags": {
-          multi_select: etiquetas.map(tag => ({ name: tag }))
+          multi_select: etiquetas.map(tag => ({ 
+            name: tag.replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ ]/g, '') 
+          }))
         }
       }
     });
-
-    console.log("✅ Nota agregada correctamente a Notion:", response.id);
     return true;
-
   } catch (error) {
-    console.error("❌ Error agregando nota a Notion:", error.message);
+    console.error("❌ Error en Notion:", error.body || error.message);
     return false;
   }
 }
 
+// ==================== FUNCIONES PARA ARCHIVOS ====================
+async function agregarEnlaceANotion(nombreArchivo, enlaceImgur) {
+  try {
+    const nombreLimpio = nombreArchivo
+      .replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ ]/g, '_')
+      .slice(0, 100);
+
+    const response = await notion.pages.create({
+      parent: { database_id: process.env.NOTION_DATABASE_ID },
+      properties: {
+        "Name": { 
+          title: [{ text: { content: nombreLimpio } }]
+        },
+        "Fecha": {
+          date: { start: new Date().toISOString() }
+        },
+        "Archivo": {
+          files: [{
+            name: "🖼️ Ver imagen",
+            type: "external",
+            external: { url: enlaceImgur }
+          }]
+        }
+      }
+    });
+    return true;
+  } catch (error) {
+    console.error("❌ Error en Notion:", error.body?.message || error.message);
+    return false;
+  }
+}
+
+// Función crítica añadida
+async function subirArchivo(nombreArchivo, enlaceImgur) {
+  try {
+    return await agregarEnlaceANotion(nombreArchivo, enlaceImgur);
+  } catch (error) {
+    console.error("❌ Error subiendo archivo:", error.message);
+    return false;
+  }
+}
+
+// ==================== FUNCIONES ADICIONALES ====================
 async function listarNotas() {
   try {
-    const response = await notion.databases.query({ database_id: process.env.NOTION_DATABASE_ID });
+    const response = await notion.databases.query({ 
+      database_id: process.env.NOTION_DATABASE_ID,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    });
 
-    if (!response.results.length) {
-      return ["📌 No hay notas guardadas en Notion."];
-    }
+    return response.results.map((page, index) => {
+      const nombre = page.properties?.Name?.title?.[0]?.text?.content || 'Sin título';
+      const fecha = new Date(page.created_time).toLocaleDateString('es-ES');
+      const etiquetas = page.properties?.Tags?.multi_select?.map(t => `🏷️ #${t.name}`).join(' ') || '';
+      const idCorto = page.id.slice(0, 8) + '...';
+      
+      // Verificar si tiene imagen de Imgur
+      const tieneImagen = page.properties?.Archivo?.files?.length > 0;
+      const iconoImagen = tieneImagen ? ' 📸' : '';
 
-    return response.results.map(page => `- ${page.properties?.["Name"]?.title?.[0]?.text?.content || 'Sin título'}`);
+      return `
+${index + 1}️⃣ *${nombre}${iconoImagen}*  
+   🆔 \`${idCorto}\`  
+   📅 ${fecha}  
+   ${etiquetas}`;
+    });
 
   } catch (error) {
-    console.error("❌ Error obteniendo notas de Notion:", error.message);
-    return ["❌ No se pudieron obtener las notas."];
+    return ["❌ Error al obtener notas"];
   }
 }
 
@@ -66,106 +117,50 @@ async function listarNotasPorTag(tag) {
       }
     });
 
-    if (!response.results.length) {
-      return [`📌 No hay notas con la etiqueta #${tag}.`];
-    }
-
-    return response.results.map(page => `- ${page.properties?.["Name"]?.title?.[0]?.text?.content || 'Sin título'}`);
-
+    return response.results.map(page => 
+      `- ${page.properties?.Name?.title?.[0]?.text?.content || 'Sin título'}`
+    );
   } catch (error) {
-    console.error("❌ Error obteniendo notas por tag:", error.message);
-    return ["❌ No se pudieron obtener las notas."];
+    console.error("❌ Error en Notion:", error.body || error.message);
+    return ["❌ Error al filtrar notas"];
   }
 }
 
 async function eliminarNota(notaId) {
   try {
-    await notion.pages.update({ page_id: notaId, archived: true });
-    console.log("✅ Nota eliminada correctamente en Notion");
-    return true;
-  } catch (error) {
-    console.error("❌ Error eliminando nota en Notion:", error.message);
-    return false;
-  }
-}
-
-async function subirPDF(nombreArchivo, rutaArchivo) {
-  try {
-    const tipoMime = mime.lookup(rutaArchivo) || 'application/pdf';
-
-    const response = await notion.pages.create({
-      parent: { database_id: process.env.NOTION_DATABASE_ID },
-      properties: {
-        "Name": { title: [{ text: { content: nombreArchivo } }] },
-        "Archivo": {
-          files: [{
-            name: nombreArchivo,
-            type: "external",
-            external: { url: `https://example.com/uploads/${nombreArchivo}` } // Reemplazar con la URL real
-          }]
-        }
-      }
+    await notion.pages.update({ 
+      page_id: notaId, 
+      archived: true 
     });
-
-    console.log("✅ Archivo PDF subido correctamente a Notion:", response.id);
     return true;
   } catch (error) {
-    console.error("❌ Error subiendo PDF a Notion:", error.message);
+    console.error("❌ Error en Notion:", error.body || error.message);
     return false;
   }
 }
 
-async function subirArchivo(nombreArchivo, media) {
-  try {
-    const extension = mime.extension(media.mimetype) || 'bin';
-    const urlTemporal = `https://example.com/uploads/${nombreArchivo}.${extension}`; // Simula una URL de archivo
-
-    const response = await notion.pages.create({
-      parent: { database_id: process.env.NOTION_DATABASE_ID },
-      properties: {
-        "Name": { title: [{ text: { content: nombreArchivo } }] },
-        "Archivo": {
-          files: [{
-            name: `${nombreArchivo}.${extension}`,
-            type: "external",
-            external: { url: urlTemporal } 
-          }]
-        }
-      }
-    });
-
-    console.log("✅ Archivo subido correctamente a Notion:", response.id);
-    return true;
-  } catch (error) {
-    console.error("❌ Error subiendo archivo a Notion:", error.message);
-    return false;
-  }
-}
-
+// ==================== AYUDA MEJORADA ====================
 async function mostrarAyuda() {
-  return `📌 *Comandos disponibles:*
+  return `
+📚 *Menú de Ayuda* 📚
 
-  📝 *Notas en Notion:*
-  - *!nota [contenido]* ➜ Agrega una nota a Notion.
-  - *!nota [contenido] #Etiqueta* ➜ Agrega una nota con etiquetas.
-  - *!nota listar* ➜ Lista todas las notas guardadas en Notion.
-  - *!nota listar #etiqueta* ➜ Lista las notas con una etiqueta específica.
-  - *!nota eliminar [ID]* ➜ Elimina una nota específica de Notion.
+📝 *Gestión de Notas:*
+  → !nota [texto] ➜ Crea nueva nota
+  → !nota listar ➜ Muestra todas las notas
+  → !nota listar #etiqueta ➜ Filtra por etiqueta
+  → !nota eliminar [ID] ➜ Elimina una nota
 
-  📂 *Gestión de Archivos en Notion:*
-  - *!subirpdf [nombre]* + _Adjunta un PDF_ ➜ Sube un archivo PDF a Notion.
-  - *!subirarchivo [nombre]* + _Adjunta una imagen u otro archivo_ ➜ Sube imágenes u otros archivos a Notion.
-
-  📅 *Eventos:*
-  - *!evento [descripción]* ➜ Crea un evento en Google Calendar.
-
-  🤖 *IA y Asistentes:*
-  - *@bot [pregunta]* ➜ Pregunta a la IA integrada en WhatsApp.
-  - *!resumen* ➜ Genera un resumen de los últimos mensajes.
-
-  🛠 *Otros:*
-  - *!help* ➜ Muestra esta lista de comandos.
-  `;
+📁 *Gestión de Archivos:*
+  → !subirarchivo [nombre] + *adjunta imagen* ➜ Sube a Imgur y Notion`;
 }
 
-module.exports = { agregarNota, listarNotas, listarNotasPorTag, eliminarNota, subirPDF, subirArchivo, mostrarAyuda };
+// Exportación completa y corregida
+module.exports = { 
+  agregarNota, 
+  listarNotas, 
+  listarNotasPorTag, 
+  eliminarNota, 
+  subirArchivo, 
+  agregarEnlaceANotion, 
+  mostrarAyuda 
+};
