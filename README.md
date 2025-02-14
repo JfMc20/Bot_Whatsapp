@@ -1,76 +1,86 @@
 🤖 Detailed Description of the Virtual Assistant
 
-The virtual assistant will be a WhatsApp bot that uses a free LLM to analyze, summarize, and organize information in Notion and Google Calendar. Additionally, it will respond to mentions and interact in group conversations. It will run on Node.js and have specific modules for each function.
+The virtual assistant is a WhatsApp bot powered by a free LLM (Language Learning Model) designed to analyze, summarize, and organize information in Notion and Google Calendar. It also responds to mentions and interacts in group conversations. Built on Node.js, it features modular architecture for scalability and flexibility.
 🏗 Structure and Functionality
-1️⃣ Interaction with WhatsApp
+1️⃣ WhatsApp Interaction
 
 📌 Technology: whatsapp-web.js (WWebJS)
 
-📌 Function: Receive messages in groups or private chats and process specific commands.
-🔹 Example commands:
+📌 Function: The bot listens to messages in groups or private chats and processes specific commands.
+🔹 Supported Commands:
 
-✅ @bot → Interact directly with the bot using natural language.
+    @bot: Interact directly with the bot using natural language.
 
-✅ !summary → Generates a summary of recent chat.
+    !summary: Generates a summary of recent chat activity.
 
-✅ !note Important task → Saves "Important task" in Notion.
+    !note [content]: Saves the provided content as a note in Notion.
 
-✅ !note list → Lists all notes.
+        Example: !note Buy groceries → Saves "Buy groceries" in Notion.
 
-✅ !uploadfile → Uploads a file to Imgur and stores it in Notion.
+    !note list: Retrieves and lists all saved notes.
 
-✅ !event Meeting tomorrow at 3 PM → Creates an event in Google Calendar.
+    !uploadfile: Uploads a file to Imgur and stores the link in Notion.
 
-✅ !help → Displays available commands.
-2️⃣ Chat Interaction (Mentions and Contextual Conversation)
+    !event [details]: Creates an event in Google Calendar.
 
-📌 Objective: The bot will respond if someone mentions it or asks a question in the group.
+        Example: !event Team meeting tomorrow at 10 AM → Creates a "Team meeting" event.
 
-📌 Technology: Mistral-7B, LLaMA, Falcon (via Hugging Face or LocalAI)
-🔹 Example usage:
+    !event list: Lists upcoming events in Google Calendar.
 
-✅ Direct Mention
+    !help: Displays a list of available commands.
 
-📥 User: "@bot, what do you think about cybersecurity?"
+2️⃣ Contextual Chat Interaction
 
-📤 Bot: "Cybersecurity is crucial. Enabling 2FA and using strong passwords helps a lot. Do you want more tips?"
+📌 Objective: The bot responds to mentions or questions in group chats, providing helpful and context-aware replies.
 
-✅ Natural Interaction
+📌 Technology: Mistral-7B, LLaMA, or Falcon (via Hugging Face or LocalAI).
+🔹 Examples:
 
-📥 User: "Today was a tough day at work..."
+    Direct Mention:
 
-📤 Bot: "Some days can be heavy, but tomorrow will surely be better. What happened?"
+        📥 User: "@bot, what do you think about cybersecurity?"
 
-✅ Answering Technical Questions
+        📤 Bot: "Cybersecurity is crucial. Enabling 2FA and using strong passwords helps a lot. Do you want more tips?"
 
-📥 User: "@bot, how do I perform pentesting on an API?"
+    Natural Interaction:
 
-📤 Bot: "To perform pentesting on APIs, you can use tools like Burp Suite or Postman with fuzzing. Do you want details?"
-3️⃣ Integration with Notion
+        📥 User: "Today was a tough day at work..."
 
-📌 Function: Save notes, tasks, and files in a Notion database.
+        📤 Bot: "Some days can be heavy, but tomorrow will surely be better. What happened?"
 
-📌 Technology: @notionhq/client (Notion API)
-🔹 Example commands:
+    Technical Questions:
 
-✅ !note Buy groceries → Saves "Buy groceries" in the Notion database.
+        📥 User: "@bot, how do I perform pentesting on an API?"
 
-✅ !note list → Retrieves and lists all saved notes.
+        📤 Bot: "To perform pentesting on APIs, you can use tools like Burp Suite or Postman with fuzzing. Do you want details?"
 
-✅ !uploadfile → Uploads a file to Imgur and stores the link in Notion.
-4️⃣ Integration with Google Calendar
+3️⃣ Notion Integration
+
+📌 Function: Save notes, tasks, and file links in a Notion database.
+
+📌 Technology: @notionhq/client (Notion API).
+🔹 Features:
+
+    Save notes with the !note command.
+
+    List all notes with !note list.
+
+    Upload files to Imgur and store links in Notion with !uploadfile.
+
+4️⃣ Google Calendar Integration
 
 📌 Function: Create and manage events in Google Calendar.
 
-📌 Technology: googleapis (Google Calendar API)
-🔹 Example commands:
+📌 Technology: googleapis (Google Calendar API).
+🔹 Features:
 
-✅ !event Team meeting tomorrow at 10 AM → Creates a "Team meeting" event.
+    Create events with the !event command.
 
-✅ !event list → Lists upcoming events.
+    List upcoming events with !event list.
+
 5️⃣ Security and Spam Handling
 
-📌 Objective: Prevent misuse and ensure the bot operates securely.
+📌 Objective: Ensure the bot operates securely and prevents misuse.
 
 📌 Features:
 
@@ -95,10 +105,13 @@ The virtual assistant will be a WhatsApp bot that uses a free LLM to analyze, su
         Mistral-7B, LLaMA, or Falcon for natural language processing.
 
     Hosting: Local machine, VPS, or cloud services like Heroku.
+    🚀 How to Use
 
-🚀 How to Use
+    Clone the repository:
+    bash
+    Copy
 
-    Clone the repository.
+    git clone https://github.com/yourusername/your-repo.git
 
     Install dependencies:
     bash
@@ -127,7 +140,12 @@ This project is licensed under the MIT License. See the LICENSE file for details
 Contributions are welcome! Please read the CONTRIBUTING.md file for guidelines.
 📞 Contact
 
-🌟 Features to Add in the Future
+For questions or suggestions, feel free to reach out:
+
+    Email: josem.csegurity@gmail.com
+    GitHub: @JfMc20
+
+🌟 Future Features
 
     Integration with more productivity tools (e.g., Trello, Slack).
 
