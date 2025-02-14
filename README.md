@@ -88,16 +88,11 @@ Este bot permite la interacción con WhatsApp mediante un modelo de lenguaje (LL
 ## 🤝 Contribuciones
 ¡Las contribuciones son bienvenidas! Si deseas colaborar, por favor revisa el archivo `CONTRIBUTING.md`.
 
----
-
-## 📜 Licencia
-[MIT License](LICENSE)
-
----
+--- 
 
 ## 📧 Contacto
 Para preguntas o sugerencias, puedes contactarme en:
-📩 **Correo:** jeson.security@gmail.com
+📩 **Correo:** josem.csecurity@gmail.com
 
 ---
 
