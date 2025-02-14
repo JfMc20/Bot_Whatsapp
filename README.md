@@ -1,154 +1,153 @@
-🤖 Detailed Description of the Virtual Assistant
+🤖 Asistente Virtual: Bot de WhatsApp para Notion y Google Calendar
 
-The virtual assistant is a WhatsApp bot powered by a free LLM (Language Learning Model) designed to analyze, summarize, and organize information in Notion and Google Calendar. It also responds to mentions and interacts in group conversations. Built on Node.js, it features modular architecture for scalability and flexibility.
-🏗 Structure and Functionality
-1️⃣ WhatsApp Interaction
+El Asistente Virtual es un bot de WhatsApp impulsado por un LLM gratuito (Modelo de Lenguaje) diseñado para analizar, resumir y organizar información en Notion y Google Calendar. Además, responde a menciones e interactúa en conversaciones grupales. Desarrollado en Node.js, cuenta con una arquitectura modular para escalabilidad y flexibilidad.
+🏗 Estructura y Funcionalidad
+1️⃣ Interacción con WhatsApp
 
-📌 Technology: whatsapp-web.js (WWebJS)
+Tecnología: whatsapp-web.js (WWebJS)
 
-📌 Function: The bot listens to messages in groups or private chats and processes specific commands.
-🔹 Supported Commands:
+Función: El bot escucha mensajes en grupos o chats privados y procesa comandos específicos.
 
-    @bot: Interact directly with the bot using natural language.
+Comandos Soportados:
 
-    !summary: Generates a summary of recent chat activity.
+@bot: Interactúa directamente con el bot usando lenguaje natural.
 
-    !note [content]: Saves the provided content as a note in Notion.
+!resumen: Genera un resumen de la actividad reciente del chat.
 
-        Example: !note Buy groceries → Saves "Buy groceries" in Notion.
+!nota [contenido]: Guarda el contenido proporcionado como una nota en Notion.
 
-    !note list: Retrieves and lists all saved notes.
+Ejemplo: !nota Comprar víveres → Guarda "Comprar víveres" en Notion.
 
-    !uploadfile: Uploads a file to Imgur and stores the link in Notion.
+!nota listar: Recupera y lista todas las notas guardadas.
 
-    !event [details]: Creates an event in Google Calendar.
+!subirarchivo: Sube un archivo a Imgur y almacena el enlace en Notion.
 
-        Example: !event Team meeting tomorrow at 10 AM → Creates a "Team meeting" event.
+!evento [detalles]: Crea un evento en Google Calendar.
 
-    !event list: Lists upcoming events in Google Calendar.
+Ejemplo: !evento Reunión mañana a las 10 AM → Crea un evento "Reunión".
 
-    !help: Displays a list of available commands.
+!evento listar: Lista los próximos eventos en Google Calendar.
 
-2️⃣ Contextual Chat Interaction
+!ayuda: Muestra una lista de comandos disponibles.
 
-📌 Objective: The bot responds to mentions or questions in group chats, providing helpful and context-aware replies.
+2️⃣ Interacción Contextual en el Chat
 
-📌 Technology: Mistral-7B, LLaMA, or Falcon (via Hugging Face or LocalAI).
-🔹 Examples:
+Objetivo: El bot responde a menciones o preguntas en chats grupales, proporcionando respuestas útiles y contextuales.
 
-    Direct Mention:
+Tecnología: Mistral-7B, LLaMA o Falcon (a través de Hugging Face o LocalAI).
 
-        📥 User: "@bot, what do you think about cybersecurity?"
+Ejemplos:
 
-        📤 Bot: "Cybersecurity is crucial. Enabling 2FA and using strong passwords helps a lot. Do you want more tips?"
+Mención Directa:
 
-    Natural Interaction:
+Usuario: "@bot, ¿qué opinas de la ciberseguridad?"
 
-        📥 User: "Today was a tough day at work..."
+Bot: "La ciberseguridad es crucial. Activar 2FA y usar contraseñas fuertes ayuda mucho. ¿Quieres más consejos?"
 
-        📤 Bot: "Some days can be heavy, but tomorrow will surely be better. What happened?"
+Interacción Natural:
 
-    Technical Questions:
+Usuario: "Hoy fue un día difícil en el trabajo..."
 
-        📥 User: "@bot, how do I perform pentesting on an API?"
+Bot: "Algunos días pueden ser pesados, pero seguro que mañana será mejor. ¿Qué pasó?"
 
-        📤 Bot: "To perform pentesting on APIs, you can use tools like Burp Suite or Postman with fuzzing. Do you want details?"
+Preguntas Técnicas:
 
-3️⃣ Notion Integration
+Usuario: "@bot, ¿cómo hago pentesting en una API?"
 
-📌 Function: Save notes, tasks, and file links in a Notion database.
+Bot: "Para hacer pentesting en APIs, puedes usar herramientas como Burp Suite o Postman con fuzzing. ¿Quieres detalles?"
 
-📌 Technology: @notionhq/client (Notion API).
-🔹 Features:
+3️⃣ Integración con Notion
 
-    Save notes with the !note command.
+Función: Guardar notas, tareas y enlaces de archivos en una base de datos de Notion.
 
-    List all notes with !note list.
+Tecnología: @notionhq/client (API de Notion).
 
-    Upload files to Imgur and store links in Notion with !uploadfile.
+Características:
 
-4️⃣ Google Calendar Integration
+Guardar notas con el comando !nota.
 
-📌 Function: Create and manage events in Google Calendar.
+Listar todas las notas con !nota listar.
 
-📌 Technology: googleapis (Google Calendar API).
-🔹 Features:
+Subir archivos a Imgur y almacenar enlaces en Notion con !subirarchivo.
 
-    Create events with the !event command.
+4️⃣ Integración con Google Calendar
 
-    List upcoming events with !event list.
+Función: Crear y gestionar eventos en Google Calendar.
 
-5️⃣ Security and Spam Handling
+Tecnología: googleapis (API de Google Calendar).
 
-📌 Objective: Ensure the bot operates securely and prevents misuse.
+Características:
 
-📌 Features:
+Crear eventos con el comando !evento.
 
-    Rate limiting to avoid spam.
+Listar próximos eventos con !evento listar.
 
-    Whitelist/blacklist for users.
+5️⃣ Manejo de Seguridad y Spam
 
-    Sensitive data encryption.
+Objetivo: Asegurar que el bot opere de manera segura y evite el uso indebido.
 
-🛠 Technical Stack
+Características:
 
-    Backend: Node.js
+Límite de tasa para evitar spam.
 
-    Libraries:
+Listas blancas/negras para usuarios.
 
-        whatsapp-web.js for WhatsApp integration.
+Cifrado de datos sensibles.
 
-        @notionhq/client for Notion integration.
+🛠 Tecnologías Utilizadas
 
-        googleapis for Google Calendar integration.
+Backend: Node.js
 
-        Mistral-7B, LLaMA, or Falcon for natural language processing.
+Librerías:
 
-    Hosting: Local machine, VPS, or cloud services like Heroku.
-    🚀 How to Use
+whatsapp-web.js para la integración con WhatsApp.
 
-    Clone the repository:
-    bash
-    Copy
+@notionhq/client para la integración con Notion.
 
-    git clone https://github.com/yourusername/your-repo.git
+googleapis para la integración con Google Calendar.
 
-    Install dependencies:
-    bash
-    Copy
+Mistral-7B, LLaMA o Falcon para el procesamiento de lenguaje natural.
 
-    npm install
+Hosting: Máquina local, VPS o servicios en la nube como Heroku.
 
-    Set up environment variables in .env:
-    env
-    Copy
+🚀 Cómo Usar
 
-    NOTION_API_KEY=your_notion_api_key
-    GOOGLE_CALENDAR_API_KEY=your_google_calendar_api_key
+Clona el repositorio:
 
-    Run the bot:
-    bash
-    Copy
+git clone https://github.com/tuusuario/tu-repositorio.git
 
-    npm start
+Instala las dependencias:
+   
+npm install
 
-📜 License
+Configura las variables de entorno en .env:
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-🙌 Contributing
+NOTION_API_KEY=tu_clave_de_api_de_notion
+GOOGLE_CALENDAR_API_KEY=tu_clave_de_api_de_google_calendar
 
-Contributions are welcome! Please read the CONTRIBUTING.md file for guidelines.
-📞 Contact
+Ejecuta el bot:
 
-For questions or suggestions, feel free to reach out:
+npm start
 
-    Email: josem.csegurity@gmail.com
-    GitHub: @JfMc20
+📜 Licencia
 
-🌟 Future Features
+Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para más detalles.
+🙌 Contribuciones
 
-    Integration with more productivity tools (e.g., Trello, Slack).
+¡Las contribuciones son bienvenidas! Por favor, lee el archivo CONTRIBUTING.md para conocer las pautas.
+📞 Contacto
 
-    Voice command support.
+Para preguntas o sugerencias, no dudes en contactarme:
 
-    Multi-language support.
+ Email: josem.csegurity@gmail.com
+
+GitHub: @JfMc20
+
+🌟 Futuras Funcionalidades
+
+Integración con más herramientas de productividad (ej: Trello, Slack).
+
+Soporte para comandos de voz.
+
+Soporte para múltiples idiomas.
+
