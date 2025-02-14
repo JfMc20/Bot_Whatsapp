@@ -1,7 +1,9 @@
 🤖 Asistente Virtual: Bot de WhatsApp para Notion y Google Calendar
 
 El Asistente Virtual es un bot de WhatsApp impulsado por un LLM gratuito (Modelo de Lenguaje) diseñado para analizar, resumir y organizar información en Notion y Google Calendar. Además, responde a menciones e interactúa en conversaciones grupales. Desarrollado en Node.js, cuenta con una arquitectura modular para escalabilidad y flexibilidad.
+
 🏗 Estructura y Funcionalidad
+
 1️⃣ Interacción con WhatsApp
 
 Tecnología: whatsapp-web.js (WWebJS)
