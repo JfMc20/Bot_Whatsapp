@@ -133,9 +133,6 @@ npm start
 
 📜 Licencia
 
-Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para más detalles.
-🙌 Contribuciones
-
 ¡Las contribuciones son bienvenidas! Por favor, lee el archivo CONTRIBUTING.md para conocer las pautas.
 📞 Contacto
 
